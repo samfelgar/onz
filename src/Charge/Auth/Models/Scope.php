@@ -18,4 +18,7 @@ enum Scope: string
     case WebhookWrite = 'webhook.write';
     case PayloadLocationWrite = 'payloadlocation.write';
     case PayloadLocationRead = 'payloadlocation.read';
+    case Email = 'email';
+    case Profile = 'profile';
+    case QrCodes = 'qrcodes';
 }

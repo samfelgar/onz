@@ -16,12 +16,12 @@ class AuthResponseTest extends TestCase
     {
         $json = <<<JSON
 {
-  "access_token": "string",
-  "expires_in": 0,
-  "refresh_expires_in": 0,
-  "token_type": "bearer",
-  "not-before-policy": 0,
-  "scope": "pix.write"
+    "access_token": "eyJhbGciOiJSUzI1NiIsInR5cCIg",
+    "expires_in": 300,
+    "refresh_expires_in": 0,
+    "token_type": "Bearer",
+    "not-before-policy": 0,
+    "scope": "email profile qrcodes"
 }
 JSON;
 
