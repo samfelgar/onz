@@ -2,12 +2,12 @@
 
 declare(strict_types=1);
 
-namespace Samfelgar\Onz\Auth;
+namespace Samfelgar\Onz\Charge\Auth;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Samfelgar\Onz\Auth\Models\AuthRequest;
-use Samfelgar\Onz\Auth\Models\AuthResponse;
+use Samfelgar\Onz\Charge\Auth\Models\AuthRequest;
+use Samfelgar\Onz\Charge\Auth\Models\AuthResponse;
 
 class Auth
 {
@@ -20,8 +20,8 @@ class Auth
      */
     public function authenticate(AuthRequest $request): AuthResponse
     {
-        $response = $this->client->post('/api/v2/oauth/token', [
-            'json' => $request,
+        $response = $this->client->post('/oauth/token', [
+            'form_params' => $request->toArray(),
         ]);
 
         return AuthResponse::fromResponse($response);

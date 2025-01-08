@@ -6,23 +6,35 @@ namespace Samfelgar\Onz\Payment;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Samfelgar\Onz\Auth\Models\AuthResponse;
+use Samfelgar\Onz\Payment\Auth\Auth;
+use Samfelgar\Onz\Payment\Auth\Models\AuthResponse;
 use Samfelgar\Onz\Payment\Models\CreatePaymentRequest;
 use Samfelgar\Onz\Payment\Models\PaymentResponse;
 use Samfelgar\Onz\Payment\Models\TransactionDetails;
 
 class Payment
 {
-    public final const BASE_URI = 'httpS://secureapi.ecomovi-prod.onz.software';
+    private ?AuthResponse $auth = null;
 
     public function __construct(
         private readonly Client $client,
-        private readonly AuthResponse $auth,
     ) {}
 
-    private function uri(string $path): string
+    public function authentication(): Auth
     {
-        return \sprintf('%s/%s', self::BASE_URI, \ltrim($path, '/'));
+        return new Auth($this->client);
+    }
+
+    public function setAuth(AuthResponse $auth): void
+    {
+        $this->auth = $auth;
+    }
+
+    private function assertAuthentication(): void
+    {
+        if ($this->auth === null) {
+            throw new \RuntimeException('You must authenticate first');
+        }
     }
 
     /**
@@ -30,7 +42,8 @@ class Payment
      */
     public function createPixPayment(CreatePaymentRequest $request): PaymentResponse
     {
-        $response = $this->client->post($this->uri('/api/v2/pix/payments/dict'), [
+        $this->assertAuthentication();
+        $response = $this->client->post('/api/v2/pix/payments/dict', [
             'headers' => [
                 'authorization' => $this->auth->authorizationHeader(),
                 'x-idempotency-key' => $request->idempotencyKey,
@@ -45,7 +58,8 @@ class Payment
      */
     public function getTransactionByEndToEndId(string $endToEndId): TransactionDetails
     {
-        $response = $this->client->get($this->uri("/api/v2/pix/payments/{$endToEndId}"), [
+        $this->assertAuthentication();
+        $response = $this->client->get("/api/v2/pix/payments/{$endToEndId}", [
             'headers' => [
                 'authorization' => $this->auth->authorizationHeader(),
             ],
@@ -58,7 +72,8 @@ class Payment
      */
     public function getTransactionByIdempotencyKey(string $idempotencyKey): TransactionDetails
     {
-        $response = $this->client->get($this->uri("/api/v2/pix/payments/idempotencyKey/{$idempotencyKey}"), [
+        $this->assertAuthentication();
+        $response = $this->client->get("/api/v2/pix/payments/idempotencyKey/{$idempotencyKey}", [
             'headers' => [
                 'authorization' => $this->auth->authorizationHeader(),
             ],

@@ -2,7 +2,7 @@
 
 declare(strict_types=1);
 
-namespace Samfelgar\Onz\Auth\Models;
+namespace Samfelgar\Onz\Payment\Auth\Models;
 
 enum Scope: string
 {

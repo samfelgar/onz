@@ -6,23 +6,35 @@ namespace Samfelgar\Onz\Charge;
 
 use GuzzleHttp\Client;
 use GuzzleHttp\Exception\GuzzleException;
-use Samfelgar\Onz\Auth\Models\AuthResponse;
+use Samfelgar\Onz\Charge\Auth\Auth;
+use Samfelgar\Onz\Charge\Auth\Models\AuthResponse;
 use Samfelgar\Onz\Charge\Models\ChargeRequest;
 use Samfelgar\Onz\Charge\Models\ChargeResponse;
 use Samfelgar\Onz\Charge\Models\PixQueryResponse;
 
 class Charge
 {
-    public const BASE_URI = 'https://api.pix.ecomovi.com.br';
+    private ?AuthResponse $auth = null;
 
     public function __construct(
         private readonly Client $client,
-        private readonly AuthResponse $auth,
     ) {}
 
-    private function uri(string $path): string
+    public function authentication(): Auth
     {
-        return \sprintf('%s/%s', self::BASE_URI, \ltrim($path, '/'));
+        return new Auth($this->client);
+    }
+
+    public function setAuth(AuthResponse $auth): void
+    {
+        $this->auth = $auth;
+    }
+
+    private function assertAuthentication(): void
+    {
+        if ($this->auth === null) {
+            throw new \RuntimeException('You must authenticate first');
+        }
     }
 
     /**
@@ -30,7 +42,8 @@ class Charge
      */
     public function createCharge(ChargeRequest $request): ChargeResponse
     {
-        $uri = $this->uri("/cob/{$request->txId}");
+        $this->assertAuthentication();
+        $uri = "/cob/{$request->txId}";
         $response = $this->client->put($uri, [
             'headers' => [
                 'Authorization' => $this->auth->authorizationHeader(),
@@ -46,7 +59,8 @@ class Charge
      */
     public function getChargeByTxId(string $txId, int $revision = 0): ChargeResponse
     {
-        $uri = $this->uri("/cob/$txId");
+        $this->assertAuthentication();
+        $uri = "/cob/$txId";
         $response = $this->client->get($uri, [
             'headers' => [
                 'Authorization' => $this->auth->authorizationHeader(),
@@ -64,7 +78,8 @@ class Charge
      */
     public function getChargeByEndToEndId(string $endToEndId): PixQueryResponse
     {
-        $uri = $this->uri("/pix/$endToEndId");
+        $this->assertAuthentication();
+        $uri = "/pix/$endToEndId";
         $response = $this->client->get($uri, [
             'headers' => [
                 'Authorization' => $this->auth->authorizationHeader(),
