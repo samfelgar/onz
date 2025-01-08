@@ -20,6 +20,7 @@ readonly class ChargeResponse
         public Amount $amount,
         public string $pixKey,
         public ?string $payerRequestText,
+        public ?string $emv,
     ) {}
 
     public static function fromArray(array $data): ChargeResponse
@@ -55,6 +56,7 @@ readonly class ChargeResponse
             new Amount(BigDecimal::of($data['valor']['original']), $data['valor']['modalidadeAlteracao'] === 1),
             $data['chave'],
             $data['solicitacaoPagador'] ?? null,
+            $data['pixCopiaECola'] ?? null,
         );
     }
 
