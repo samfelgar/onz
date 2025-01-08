@@ -25,13 +25,30 @@ readonly class ChargeResponse
 
     public static function fromArray(array $data): ChargeResponse
     {
-        $createdAt = \DateTimeImmutable::createFromFormat(
+        $createdAt = null;
+        $dateFormats = [
+            \DateTimeInterface::ATOM,
             \DateTimeInterface::RFC3339_EXTENDED,
-            $data['calendario']['criacao'],
-        );
+        ];
+
+        foreach ($dateFormats as $format) {
+            $_date = \DateTimeImmutable::createFromFormat(
+                $format,
+                $data['calendario']['criacao'],
+            );
+
+            if ($_date !== false) {
+                $createdAt = $_date;
+                break;
+            }
+        }
+
+        if ($createdAt === null) {
+            throw new \InvalidArgumentException('Invalid creation date');
+        }
 
         $payer = null;
-        if (isset($data['devedor'])) {
+        if (!empty($data['devedor'])) {
             $payer = new Payer(
                 isset($data['devedor']['cnpj']) ? new Cnpj($data['devedor']['cnpj']) : new Cpf($data['devedor']['cpf']),
                 $data['devedor']['nome'],
