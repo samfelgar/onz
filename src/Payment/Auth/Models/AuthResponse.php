@@ -16,7 +16,7 @@ readonly class AuthResponse
         public string $tokenType,
         public int $expiresAt,
         public int $refreshExpiresIn,
-        public int $notBeforePolicy,
+        public ?int $notBeforePolicy,
         public string $accessToken,
         public array $scopes,
     ) {
@@ -31,7 +31,7 @@ readonly class AuthResponse
             $data['tokenType'],
             $data['expiresAt'],
             $data['refreshExpiresIn'],
-            $data['notBeforePolicy'],
+            $data['notBeforePolicy'] ?? null,
             $data['accessToken'],
             $scopes,
         );

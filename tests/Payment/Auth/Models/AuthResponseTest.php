@@ -4,6 +4,7 @@ namespace Samfelgar\Onz\Tests\Payment\Auth\Models;
 
 use GuzzleHttp\Psr7\Response;
 use PHPUnit\Framework\Attributes\CoversClass;
+use PHPUnit\Framework\Attributes\DataProvider;
 use PHPUnit\Framework\Attributes\Test;
 use PHPUnit\Framework\TestCase;
 use Samfelgar\Onz\Payment\Auth\Models\AuthResponse;
@@ -12,9 +13,19 @@ use Samfelgar\Onz\Payment\Auth\Models\AuthResponse;
 class AuthResponseTest extends TestCase
 {
     #[Test]
-    public function itCanParseAResponse(): void
+    #[DataProvider('itCanParseAResponseProvider')]
+    public function itCanParseAResponse(string $json): void
     {
-        $json = <<<JSON
+        $response = new Response(body: $json);
+        $authResponse = AuthResponse::fromResponse($response);
+        $this->assertInstanceOf(AuthResponse::class, $authResponse);
+    }
+
+    public static function itCanParseAResponseProvider(): array
+    {
+        return [
+            [
+                <<<JSON
             {
               "tokenType": "string",
               "expiresAt": 0,
@@ -23,10 +34,11 @@ class AuthResponseTest extends TestCase
               "accessToken": "string",
               "scope": "pix.read"
             }
-            JSON;
-
-        $response = new Response(body: $json);
-        $authResponse = AuthResponse::fromResponse($response);
-        $this->assertInstanceOf(AuthResponse::class, $authResponse);
+            JSON
+            ],
+            [
+                '{"accessToken":"token","expiresAt":1736394756,"refreshExpiresIn":0,"tokenType":"Bearer","scope":"api-account pix.write pix.read"}'
+            ]
+        ];
     }
 }
