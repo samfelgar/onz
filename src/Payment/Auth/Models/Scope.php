@@ -16,4 +16,5 @@ enum Scope: string
     case Account = 'account.read';
     case InfractionsRead = 'infractions.read';
     case InfractionsWrite = 'infractions.write';
+    case ApiAccount = 'api-account';
 }
