@@ -19,7 +19,19 @@ readonly class PaymentResponse
 
     public static function fromArray(array $data): PaymentResponse
     {
-        $eventDate = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $data['eventDate']);
+        $formats = [\DateTimeInterface::RFC3339_EXTENDED, \DateTimeInterface::ATOM];
+
+        $eventDate = null;
+        foreach ($formats as $format) {
+            $date = \DateTimeImmutable::createFromFormat($format, $data['eventDate']);
+            if ($date !== false) {
+                $eventDate = $date;
+            }
+        }
+
+        if ($eventDate === null) {
+            throw new \InvalidArgumentException('Invalid event date format');
+        }
 
         return new PaymentResponse(
             $data['endToEndId'],
