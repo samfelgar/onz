@@ -145,10 +145,23 @@ class PixQueryResponseTest extends TestCase
     }
 
     #[Test]
-    public function itParsesTheReturns(): void
+    #[DataProvider('itParsesRequestsProvider')]
+    public function itParsesRequests(string $json): void
     {
-        $json = <<<JSON
-{
+        $request = new Request('post', '/test', body: $json);
+        $pix = PixQueryResponse::fromRequest($request);
+        $this->assertCount(1, $pix->returns);
+        $this->assertTrue($pix->hasReturns());
+
+        $returnInformation = $pix->returns[0];
+        $this->assertEquals(ReturnStatus::Returned, $returnInformation->status);
+    }
+
+    public static function itParsesRequestsProvider(): array
+    {
+        return [
+            [
+                '{
   "pix": {
     "txid": "c3e0e7a4e7f1469a9f782d3d4999343c",
     "valor": "110.00",
@@ -170,14 +183,8 @@ class PixQueryResponseTest extends TestCase
     },
     "endToEndId": "E12345678202009091221abcdef12345"
   }
-}
-JSON;
-        $request = new Request('post', '/test', body: $json);
-        $pix = PixQueryResponse::fromRequest($request);
-        $this->assertCount(1, $pix->returns);
-        $this->assertTrue($pix->hasReturns());
-
-        $returnInformation = $pix->returns[0];
-        $this->assertEquals(ReturnStatus::Returned, $returnInformation->status);
+}',
+            ],
+        ];
     }
 }

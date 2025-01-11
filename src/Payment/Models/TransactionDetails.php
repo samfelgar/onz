@@ -15,7 +15,7 @@ readonly class TransactionDetails
      */
     public function __construct(
         public int $id,
-        public string $idempotencyKey,
+        public ?string $idempotencyKey,
         public string $endToEndId,
         public string $pixKey,
         public PaymentMethod $paymentMethod,
@@ -36,7 +36,19 @@ readonly class TransactionDetails
 
     public static function fromArray(array $data): TransactionDetails
     {
-        $createdAt = \DateTimeImmutable::createFromFormat(\DateTimeInterface::ATOM, $data['createdAt']);
+        $createdAt = null;
+        $formats = [\DateTimeInterface::ATOM, \DateTimeInterface::RFC3339_EXTENDED];
+
+        foreach ($formats as $format) {
+            $date = \DateTimeImmutable::createFromFormat($format, $data['createdAt']);
+            if ($date !== false) {
+                $createdAt = $date;
+            }
+        }
+
+        if ($createdAt === null) {
+            throw new \InvalidArgumentException('Unable to parse the created at date');
+        }
 
         $refunds = \array_map(static function (array $data): Refund {
             return new Refund(
