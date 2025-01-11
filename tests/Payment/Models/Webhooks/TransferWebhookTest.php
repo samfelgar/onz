@@ -42,10 +42,10 @@ class TransferWebhookTest extends TestCase
         "webhookType": "RECEIVE",
         "debtorAccount": {
             "ispb": "00416968",
-            "name": "SAMUEL FELIPE GARCIA",
+            "name": "JOHN DOE",
             "issuer": "0000",
             "number": "0000",
-            "document": "03701407100",
+            "document": "99999999999",
             "accountType": "CACC"
         },
         "idempotencyKey": null,
