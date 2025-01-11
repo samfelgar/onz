@@ -27,7 +27,7 @@ readonly class TransactionDetails
         public ?Account $creditor,
         public ?Account $debtor,
         public ?string $remittanceInformation,
-        public string $txId,
+        public ?string $txId,
         public PaymentAmount $paymentAmount,
         public array $refunds,
     ) {
