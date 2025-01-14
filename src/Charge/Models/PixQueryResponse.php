@@ -20,6 +20,7 @@ readonly class PixQueryResponse
         public BigDecimal $amount,
         public \DateTimeImmutable $datetime,
         public ?string $payerInfo,
+        public ?Payer $payer,
         public array $returns,
     ) {
         Assert::allIsInstanceOf($this->returns, ReturnInformation::class);
@@ -41,12 +42,35 @@ readonly class PixQueryResponse
             $returns[] = ReturnInformation::fromArray($data['devolucoes']);
         }
 
+        $getPayer = static function (?array $payer): ?Payer {
+            if ($payer === null) {
+                return null;
+            }
+
+            $document = null;
+
+            if (isset($payer['cpf'])) {
+                $document = new Cpf($payer['cpf']);
+            } elseif (isset($payer['cnpj'])) {
+                $document = new Cnpj($payer['cnpj']);
+            }
+
+            if ($document === null) {
+                return null;
+            }
+
+            return new Payer($document, $payer['nome'], []);
+        };
+
+        $payer = $getPayer($data['pagador'] ?? null);
+
         return new PixQueryResponse(
             $data['endToEndId'],
             $data['txid'],
             BigDecimal::of($data['valor']),
             $datetime,
             $data['infoPagador'] ?? null,
+            $payer,
             $returns,
         );
     }

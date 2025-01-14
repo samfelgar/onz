@@ -105,7 +105,7 @@ class PixQueryResponseTest extends TestCase
                         "valor": "110.00",
                         "horario": "2020-09-09T20:15:00.358Z",
                         "pagador": {
-                          "cpf": "0123456789",
+                          "cpf": "01234567890",
                           "nome": "Nome Pagador"
                         },
                         "endToEndId": "E12345678202009091221abcdef12345"
@@ -122,7 +122,7 @@ class PixQueryResponseTest extends TestCase
                         "valor": "110.00",
                         "horario": "2020-09-09T20:15:00.358Z",
                         "pagador": {
-                          "cpf": "0123456789",
+                          "cpf": "01234567890",
                           "nome": "Nome Pagador"
                         },
                         "devolucoes": {
@@ -141,6 +141,10 @@ class PixQueryResponseTest extends TestCase
                     }
                     JSON,
             ],
+
+            [
+                '{"endToEndId":"E22896431202501141959otgY0FXcngz","valor":"688.00","horario":"2025-01-14T20:00:18.079Z","txid":"fa54e10a296240c098b36ab855649a14","pagador":{"nome":"Wagner Bargmann","cpf":"00317813064"}}'
+            ]
         ];
     }
 
@@ -167,7 +171,7 @@ class PixQueryResponseTest extends TestCase
     "valor": "110.00",
     "horario": "2020-09-09T20:15:00.358Z",
     "pagador": {
-      "cpf": "0123456789",
+      "cpf": "01234567890",
       "nome": "Nome Pagador"
     },
     "devolucoes": {
