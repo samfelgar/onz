@@ -115,6 +115,25 @@ class TransferWebhookTest extends TestCase
   },
   "type": "TRANSFER"
 }'
+            ],
+
+            [
+                '{
+    "data": {
+        "status": "REJECTED",
+        "message": "Chave Pix não encontrada",
+        "createdAt": "2025-01-15T14:13:36.321+00:00",
+        "endToEndId": "E330535802025011514133210140cb10",
+        "webhookType": "CASHOUT",
+        "idempotencyKey": "8ad0801d-4c25-4bd4-90ce-feb74c3fa9e7"
+    },
+    "type": "CASHOUT",
+    "transaction": {
+        "status": "REJECTED",
+        "message": "Chave Pix não encontrada",
+        "reference": "8ad0801d-4c25-4bd4-90ce-feb74c3fa9e7"
+    }
+}'
             ]
         ];
     }

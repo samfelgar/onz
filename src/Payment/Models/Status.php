@@ -11,4 +11,5 @@ enum Status: string
     case Liquidated = 'LIQUIDATED';
     case Refunded = 'REFUNDED';
     case PartiallyRefunded = 'PARTIALLY_REFUNDED';
+    case Rejected = 'REJECTED';
 }
