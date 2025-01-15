@@ -14,6 +14,8 @@ class TransferWebhook
         public readonly ?TransactionDetails $transactionDetails,
         public readonly WebhookType $type,
         public readonly Status $status,
+        public readonly ?string $idempotencyKey,
+        public readonly ?string $endToEndId,
         public readonly ?string $message,
     ) {}
 
@@ -39,6 +41,8 @@ class TransferWebhook
             $details,
             WebhookType::from($parsed['type']),
             $status,
+            $parsed['data']['idempotencyKey'],
+            $parsed['data']['endToEndId'],
             $parsed['data']['message'] ?? null,
         );
     }
